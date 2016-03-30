@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.9.4'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'com.gradle.plugin-publish'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'org.apache.commons:commons-compress:1.10'
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        // the groovy in spock conflicts with the goovy in gradle
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+}
+
+version = '0.0.1'
+group = 'com.jamesward'
+
+pluginBundle {
+    website = 'http://www.jamesward.com/'
+    vcsUrl = 'https://github.com/jamesward/atom-gradle-plugin'
+    description = 'Download and run the Atom editor'
+    tags = ['atom']
+
+    plugins {
+        atomPlugin {
+            id = 'com.jamesward.atomgradleplugin'
+            displayName = 'Gradle Atom Plugin'
+        }
+    }
+}
+
+sourceCompatibility = 1.6
