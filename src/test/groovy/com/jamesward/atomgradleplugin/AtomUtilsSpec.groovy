@@ -18,11 +18,11 @@ class AtomUtilsSpec extends Specification {
         Release latestPrerelease = AtomUtils.latest(false)
 
         then:
-        latestRelease.name == '1.6.1'
+        latestRelease.name == '1.8.0'
         latestRelease.assets.length > 0
         !latestRelease.prerelease
 
-        latestPrerelease.name == '1.7.0-beta3'
+        latestPrerelease.name == '1.9.0-beta0'
         latestPrerelease.assets.length > 0
         latestPrerelease.prerelease
     }

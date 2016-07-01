@@ -40,7 +40,7 @@ class AtomPluginSpec extends Specification {
         then:
         project.atom.filesToOpen == ["foo"]
         project.atom.excludePrereleases == true
-        project.atom.version == '1.6.1'
+        project.atom.version == '1.8.0'
     }
 
     def 'atomDownload works'() {
