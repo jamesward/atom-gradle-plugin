@@ -40,7 +40,32 @@ class AtomPluginSpec extends Specification {
         then:
         project.atom.filesToOpen == ["foo"]
         project.atom.excludePrereleases == true
-        project.atom.version == '1.8.0'
+        project.atom.version == null
+    }
+
+    def 'atom version works'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+        project.apply(plugin: AtomPlugin)
+
+        when:
+        project.tasks.atomVersion.execute()
+
+        then:
+        project.atom.version == "1.13.0"
+    }
+
+    def 'atom home works'() {
+        setup:
+        Project project = ProjectBuilder.builder().build()
+        project.apply(plugin: AtomPlugin)
+
+        when:
+        project.tasks.atomHome.execute()
+
+        then:
+        project.atom.version == "1.13.0"
+        !project.atom.home.getPath().contains("null")
     }
 
     def 'atomDownload works'() {
@@ -68,6 +93,8 @@ class AtomPluginSpec extends Specification {
         project.apply(plugin: AtomPlugin)
 
         when:
+        project.tasks.atomHome.execute()
+
         if (!project.atom.home.exists()) {
             project.tasks.atomDownload.execute()
         }
@@ -84,6 +111,8 @@ class AtomPluginSpec extends Specification {
         project.apply(plugin: AtomPlugin)
 
         when:
+        project.tasks.atomHome.execute()
+
         if (!project.atom.home.exists()) {
             project.tasks.atomDownload.execute()
         }

@@ -9,6 +9,8 @@ class AtomPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.extensions.create('atom', AtomPluginExtension)
+        project.task('atomVersion', type: AtomVersionTask)
+        project.task('atomHome', type: AtomHomeTask)
         project.task('atomDownload', type: AtomDownloadTask)
         project.task('atomInstallPackages', type: AtomInstallPackagesTask)
         project.task('atomRun', type: AtomRunTask)
@@ -19,14 +21,33 @@ class AtomPlugin implements Plugin<Project> {
 
 class AtomPluginExtension {
     def Boolean excludePrereleases = true
-    def String version = AtomUtils.latest(excludePrereleases).name
+    def String version
     def OS os = OS.ofName(System.getProperty("os.name"))
     def String[] packages = []
     def String[] filesToOpen = ["."]
-    def File home = new File(System.getProperty('user.home'), '.atom/' + version) // todo: windows
+    def File home
 }
 
-class AtomDownloadTask extends DefaultTask {
+class AtomVersionTask extends DefaultTask {
+    @TaskAction
+    def atomVersion() {
+        if (project.atom.version == null) {
+            project.atom.version = AtomUtils.latest(project.atom.excludePrereleases).name
+        }
+    }
+}
+
+class AtomHomeTask extends AtomVersionTask {
+    @TaskAction
+    def atomHome() {
+        if (project.atom.home == null) {
+            project.atom.home = new File(System.getProperty('user.home'), '.atom/' + project.atom.version)
+            // todo: windows
+        }
+    }
+}
+
+class AtomDownloadTask extends AtomHomeTask {
 
     def unzipAsset(String name) {
         def asset = AtomUtils.release(project.atom.version).assets.find { it.name == name }
@@ -52,7 +73,7 @@ class AtomDownloadTask extends DefaultTask {
 
 }
 
-class AtomInstallPackagesTask extends DefaultTask {
+class AtomInstallPackagesTask extends AtomHomeTask {
 
     @TaskAction
     def atomInstallPackages() {
@@ -86,7 +107,7 @@ class AtomInstallPackagesTask extends DefaultTask {
 
 }
 
-class AtomRunTask extends DefaultTask {
+class AtomRunTask extends AtomHomeTask {
 
     @TaskAction
     def atomRun() {
@@ -111,7 +132,7 @@ class AtomRunTask extends DefaultTask {
 
 }
 
-class AtomTask extends DefaultTask {
+class AtomTask extends AtomHomeTask {
 
     @TaskAction
     def atom() {
