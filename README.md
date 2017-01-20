@@ -5,7 +5,7 @@
 Add the plugin in your `build.gradle` file:
 
     plugins {
-        id 'com.jamesward.atomgradleplugin' version '0.0.1'
+        id 'com.jamesward.atomgradleplugin' version '0.0.2'
     }
 
 Download and launch Atom:
@@ -35,6 +35,8 @@ Try the plugin in the test project:
 
 Release:
 
+    # update version in README.md
+    # update version in build.gradle
     git tag v0.0.x
     git push --tags
     ./gradlew publishPlugins
